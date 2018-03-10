@@ -16,6 +16,7 @@ portsub = []
 payloadpub = ''
 payloadsub = ''
 buf = ''
+count = 0
 
 
 #txtin,addr = s.recvfrom(MAX_BUF)  # txtin stores receive text
@@ -29,26 +30,25 @@ while(1):
     status , topic , payload , commander = txtin.split(",")
     print(status + topic + payload + commander)
     ip , port = addr
-    print(port)
+    print('port now > '+str(port))
     if(status == 'pub'):
             topicpub = topic
             payloadpub = payload
             portpub = port
-            print('Publisher Topic : '+topicpub+' > '+payloadpub+' '+commander)
-            addrpub = ('127.0.0.1', int(portpub))
+            print('Port Pub : '+str(portpub))
+            #addrpub = ('127.0.0.1', int(portpub))
 
     elif(status == 'sub'):
-            print('hee')
+
             topicsub.append(topic)
             payloadsub = payload
             portsub.append(port)
             #print('Subscriber Topic is : '+topicsub+'\n\n')
-            #addrsub = ('127.0.0.1', int(portsub))
-            print('kuy')
-            for item in topicsub:
-                print('\t\tThis is a jubujubu'+item+' ')
-            
-            
+
+            for item in portsub:
+                print('Port Sub : '+str(item))
+            #for item1 in portsub:
+                #addrsub = ('127.0.0.1', int(item1))            
 
     if(commander == 'cancel'):
                 topicpub = ''
@@ -60,15 +60,16 @@ while(1):
                 buf = ''
                 print(payloadpub)
        
+    for index,item in enumerate(topicsub):
+        print(item)
+        if(topicpub == item):
+            print('portpub = '+str(portpub))
+            print('portsend = '+str(portsub[index]))
+            addrsub = ('127.0.0.1', int(portsub[index])) 
+            s.sendto(payloadpub.encode('utf-8'), addrsub)
 
-    if(topicpub == topicsub):
-   
-        print('portsend  '+str(portsub))
-        s.sendto(payloadpub.encode('utf-8'), addrsub)
 
-    print('Port Publisher > '+str(portpub))
-    print('Port Subscriber > '+str(portsub))
+    #print('Port Publisher > '+str(portpub))
+    #print('Port Subscriber > '+str(portsub))
         
-
-
 s.close()
